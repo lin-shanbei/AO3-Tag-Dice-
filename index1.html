@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AO3 Tag Dice 🎲</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            background: #16213e;
+            border-radius: 20px;
+            padding: 32px 28px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid #0f3460;
+        }
+
+        h1 {
+            color: #e94560;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            color: #8899aa;
+            text-align: center;
+            font-size: 13px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid #0f3460;
+            padding-bottom: 16px;
+        }
+
+        /* PRESET 切换 */
+        .preset-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            background: #1a1a3e;
+            border: 1px solid #2a2a5e;
+            color: #aab;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: #2a2a5e;
+            color: #fff;
+        }
+
+        .preset-btn.active {
+            background: #e94560;
+            border-color: #e94560;
+            color: #fff;
+        }
+
+        /* 结果卡片 */
+        .card {
+            background: #0f3460;
+            border-radius: 16px;
+            padding: 24px 20px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 20px;
+            border: 1px solid #1a4a7a;
+            transition: opacity 0.2s;
+        }
+
+        .tag-row {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+        }
+
+        .tag-label {
+            color: #6688aa;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 56px;
+        }
+
+        .tag-value {
+            color: #f0f4f8;
+            font-size: 15px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .tag-value.highlight {
+            color: #ffd700;
+        }
+
+        .tag-value.intense {
+            color: #ff6b6b;
+        }
+
+        .empty-placeholder {
+            color: #445566;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        /* 按钮区 */
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-roll {
+            background: #e94560;
+            color: #fff;
+        }
+
+        .btn-roll:hover {
+            background: #d63850;
+            transform: translateY(-1px);
+        }
+
+        .btn-copy {
+            background: #1a4a7a;
+            color: #ccd;
+        }
+
+        .btn-copy:hover {
+            background: #2a5a8a;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2a3a5a;
+            color: #dde;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* JSON 编辑器入口（折叠） */
+        .json-section {
+            margin-top: 24px;
+            border-top: 1px solid #0f3460;
+            padding-top: 14px;
+        }
+
+        .json-toggle {
+            background: none;
+            border: none;
+            color: #556677;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
